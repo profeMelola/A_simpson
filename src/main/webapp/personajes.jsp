@@ -54,6 +54,10 @@
     <a href="${pageContext.request.contextPath}/personajes">Limpiar filtros</a>
 </form>
 
+<c:if test="${not empty error}">
+    <p class="error">${error}</p>
+</c:if>
+
 <p class="resumen"><strong>${personajes.size()}</strong> personajes encontrados</p>
 
 <!-- pendiente validar si la lista no está vacía -->
