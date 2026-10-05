@@ -33,6 +33,7 @@
         <legend>Ordenar</legend>
 
         <label>Ordenar por
+            <!-- MEJORA!! NO PERDER LA SELECCIÓN DE LA LISTA -->
             <select name="ordenarPor">
                 <option value="nombre">Nombre</option>
                 <option value="apellido">Apellido</option>
