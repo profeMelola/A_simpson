@@ -42,6 +42,13 @@ public class PersonajesServlet extends HttpServlet {
         String edadMax = request.getParameter("edadMax");
         String limite = request.getParameter("limite");
 
+        // MEJORA 1
+        String ocupacion = request.getParameter("ocupacion");
+
+        // MEJORA 3
+        boolean soloFamilia = request.getParameter("soloFamilia") != null; // si no marca, no viaja, es un nulo
+
+
         List<Personaje> personajes = new ArrayList<>(); // no es null. Es una lista vacía con 0 elementos. Está inicializada
         // ------------------------------------------------------
         // 2. TRATAR LOS PARÁMETROS. CONVERSIONES Y VALIDACIONES
@@ -51,16 +58,17 @@ public class PersonajesServlet extends HttpServlet {
 
             // 3. LÓGICA. Necesito obtener los personajes de los Simpson
             // PENDIENTE!!! enviar los parámetros de filtrado y ordenación al servicio
-            personajes = servicio.buscar(lugar,edadMaxInt,ordenarPor,descendente,limiteInt);
+            personajes = servicio.buscar(lugar,edadMaxInt,ordenarPor,descendente,limiteInt, ocupacion, soloFamilia);
 
         }catch (Exception e){
             // Escribir un mensaje de error en personajes.jsp
             request.setAttribute("error", e.getMessage());
         }
 
-        // 4. PASAR A LA VISTA TODO LO QUE NECESITE
+        // 4. PASAR A LA VISTA TODO LO QUE NECESITE (MODELO)
         request.setAttribute("personajes", personajes);
         request.setAttribute("lugares", servicio.lugaresDisponibles());
+        request.setAttribute("ocupaciones", servicio.ocupacionesDisponibles());
 
         // 5. REENVIAR A LA VISTA (plantilla JSP)
         request.getRequestDispatcher("/personajes.jsp").forward(request,response);

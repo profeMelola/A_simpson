@@ -33,7 +33,9 @@ public class PersonajeServicio {
                                   Integer edadMax,
                                   String ordernaPor, // pendiente
                                   boolean descendente, // pendiente
-                                  Integer limite
+                                  Integer limite,
+                                  String ocupacion,
+                                  boolean soloFamilia
                                   ) {
 
         // -----------------------------------------------------------
@@ -63,6 +65,10 @@ public class PersonajeServicio {
 //        System.out.println(personajeTradicional); // si no tiene toString sale la traza chunga....
 
         // -------------------------------------
+//        List<Personaje> personajes2 = repositorio.findAll();
+//        personajes2.sort(Comparator.comparing(Personaje::nombre));
+//        System.out.println("************** personajes2:"+personajes2);
+
         // -----------------------------------------------------------
 
         return repositorio.findAll().stream()
@@ -70,6 +76,10 @@ public class PersonajeServicio {
                 // filter() deja pasar solo los que cumplen la condición
                 .filter( p -> lugar == null || lugar.isBlank() || p.lugar().equalsIgnoreCase(lugar))
                 .filter(p -> edadMax == null || p.edad() <= edadMax)
+
+                .filter( p -> ocupacion == null || ocupacion.isBlank() || p.ocupacion().equalsIgnoreCase(ocupacion))
+
+                .filter( p -> !soloFamilia || p.principal())
 
                 //.sorted( (p1, p2) -> p1.nombre().compareTo(p2.nombre()))
                 //.sorted(Comparator.comparing(Personaje::nombre))
@@ -98,6 +108,25 @@ public class PersonajeServicio {
 
     }
 
+
+    /**
+     *
+     * @return
+     */
+    public List<String> ocupacionesDisponibles(){
+        return repositorio.findAll().stream()
+                .map(Personaje::ocupacion)
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
+    /**
+     *
+     * @param ordenaPor
+     * @param descendente
+     * @return
+     */
     private Comparator<Personaje> crearComparador(String ordenaPor, boolean descendente){
         Comparator<Personaje> comparador = switch( ordenaPor == null ? "" : ordenaPor){
 
@@ -107,6 +136,9 @@ public class PersonajeServicio {
 
             // por apellido y, si no coinciden, por nombre
             case "apellido" -> Comparator.comparing(Personaje::apellido).thenComparing(Personaje::nombre);
+
+            // MEJORA 2
+            case "lugar" -> Comparator.comparing(Personaje::lugar).thenComparing(Personaje::nombre);
 
             default -> Comparator.comparing(Personaje::nombre); // por descarte, ha seleccionado nombre
 
